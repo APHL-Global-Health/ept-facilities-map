@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <style>
+	    .main-content{
+	      width: 1000px;
+	      margin: 0 auto;
+	      text-align: center;
+	      font-size: 12px;
+	    }
+	    .map {
+	      display: inline-block;
+	      margin: 0 auto;
+	      overflow: hidden;
+	    }
+
+	  </style>
+	</head>
+	<body>
+	  <section class="main-content">
+	    <h2>EQA PT  2017 (April -March 2018) HuQAS Enrolled Facilities</h2>
+	    <div id="chart"></div>
+	  </section>
+	  <!--Load D3 library -->
+	  <script src="js/d3.v3.min.js"></script>
+	  <script type="text/javascript">
+	    //place for D3 functions
+	    function draw(geo_data) {
+		  "use strict";
+		  var width = 750,
+		      height = 600,
+		      scale = 3170,
+		      translateX = -1740,
+		      translateY = 310;
+
+		  var projection = d3.geo.mercator()
+		      .scale(scale)
+		      .center([0,0])
+		      .translate( [translateX, translateY]);
+
+		  var path = d3.geo.path().projection(projection);
+
+		  var svg = d3.select("#chart")
+		      .append("svg")
+		        .attr("width", width)
+		        .attr("height", height)
+		        .attr("class", "map");
+
+		  function fillColor(d){
+		  	var color = "#ffffbf";
+		  	if(d.geometry.type == "Point") return "#ff0000";
+		  	switch(Math.round(Math.random()*9)){
+				case 1: color = "#96bd93"; break;
+				case 2: color = "#a6d96a"; break;
+				case 3: color = "lightblue"; break;
+				case 4: color = "#ffffbf"; break;
+				case 5: color = "#fee08b"; break;
+				case 6: color = "#fdae61"; break;
+				case 7: color = "#f4fdf3"; break;
+				case 8: color = "#e0d7c7"; break;
+				default: color = "#ffffbf"; break;
+		  	}
+		  	return color;
+		  }
+
+		  var map = svg.selectAll("path")
+		      .data(geo_data.features)
+		      .enter()
+		      .append("path")
+		        .attr("d", path)
+		        .style("fill", 	fillColor)
+		        .style("stroke", "black")
+		        .style("stroke-width", 0.3);
+
+		    // SHOW COUNTY NAMES
+		    // svg.selectAll("text")
+			   //  .data(geo_data.features)
+			   //  .enter()
+			   //  .append("svg:text")
+			   //  .text(function(d){
+			   //      return d.properties.COUNTY;
+			   //  })
+			   //  .attr("x", function(d){
+			   //      return path.centroid(d)[0];
+			   //  })
+			   //  .attr("y", function(d){
+			   //      return  path.centroid(d)[1];
+			   //  })
+			   //  .attr("text-anchor","middle")
+			   //  .attr('font-size','6pt');
+
+		};
+
+	    d3.json("county4.geojson", draw);
+	  </script>
+	</body>
+</html>
